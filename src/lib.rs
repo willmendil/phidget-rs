@@ -27,7 +27,7 @@
 
 use std::{
     ffi::CStr,
-    os::raw::{c_char, c_uint, c_void},
+    os::raw::{c_char, c_int, c_void},
     ptr,
     time::Duration,
 };
@@ -63,7 +63,7 @@ pub const TIMEOUT_DEFAULT: Duration = Duration::from_millis(PHIDGET_TIMEOUT_DEFA
 /// argument.
 pub(crate) fn get_ffi_string<F>(mut f: F) -> Result<String>
 where
-    F: FnMut(*mut *const c_char) -> c_uint,
+    F: FnMut(*mut *const c_char) -> c_int,
 {
     unsafe {
         let mut ver: *const c_char = ptr::null_mut();
@@ -85,7 +85,7 @@ pub(crate) fn drop_cb<P: ?Sized>(cb: Option<*mut c_void>) {
 
 /// Phidget channel class
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(u32)]
+#[repr(i32)]
 #[allow(missing_docs)]
 pub enum ChannelClass {
     Nothing = ffi::Phidget_ChannelClass_PHIDCHCLASS_NOTHING, // 0
@@ -130,10 +130,10 @@ pub enum ChannelClass {
     VoltageRatioInput = ffi::Phidget_ChannelClass_PHIDCHCLASS_VOLTAGERATIOINPUT, // 31
 }
 
-impl TryFrom<u32> for ChannelClass {
+impl TryFrom<i32> for ChannelClass {
     type Error = Error;
 
-    fn try_from(val: u32) -> Result<Self> {
+    fn try_from(val: i32) -> Result<Self> {
         use ChannelClass::*;
         match val {
             ffi::Phidget_ChannelClass_PHIDCHCLASS_NOTHING => Ok(Nothing), // 0
@@ -187,7 +187,7 @@ impl TryFrom<u32> for ChannelClass {
 
 /// Phidget device class
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(u32)]
+#[repr(i32)]
 #[allow(missing_docs)]
 pub enum DeviceClass {
     Nothing = ffi::Phidget_DeviceClass_PHIDCLASS_NOTHING, // 0
@@ -218,10 +218,10 @@ pub enum DeviceClass {
     Vint = ffi::Phidget_DeviceClass_PHIDCLASS_VINT,       // 21
 }
 
-impl TryFrom<u32> for DeviceClass {
+impl TryFrom<i32> for DeviceClass {
     type Error = Error;
 
-    fn try_from(val: u32) -> Result<Self> {
+    fn try_from(val: i32) -> Result<Self> {
         use DeviceClass::*;
         match val {
             ffi::Phidget_DeviceClass_PHIDCLASS_NOTHING => Ok(Nothing), // 0

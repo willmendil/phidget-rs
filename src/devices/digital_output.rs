@@ -183,7 +183,7 @@ impl DigitalOutput {
     }
 
     /// Get led forward voltage
-    pub fn get_led_forward_voltage(&self) -> Result<u32> {
+    pub fn get_led_forward_voltage(&self) -> Result<i32> {
         let mut value: ffi::PhidgetDigitalOutput_LEDForwardVoltage = 0;
         ReturnCode::result(unsafe {
             ffi::PhidgetDigitalOutput_getLEDForwardVoltage(self.chan, &mut value)

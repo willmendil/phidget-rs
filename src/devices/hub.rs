@@ -13,7 +13,7 @@
 use crate::{AttachCallback, DetachCallback, Error, GenericPhidget, Phidget, Result, ReturnCode};
 use phidget_sys::{self as ffi, PhidgetHandle, PhidgetHubHandle as HubHandle};
 use std::{
-    os::raw::{c_int, c_uint, c_void},
+    os::raw::{c_int, c_void},
     ptr,
 };
 
@@ -21,7 +21,7 @@ use std::{
 
 /// Possible operational modes for a hub port
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(u32)]
+#[repr(i32)]
 pub enum HubPortMode {
     /// Communicate with a smart VINT device
     Vint = ffi::PhidgetHub_PortMode_PORT_MODE_VINT_PORT, // 0
@@ -35,10 +35,10 @@ pub enum HubPortMode {
     VoltageRatioInput = ffi::PhidgetHub_PortMode_PORT_MODE_VOLTAGE_RATIO_INPUT, // 4
 }
 
-impl TryFrom<u32> for HubPortMode {
+impl TryFrom<i32> for HubPortMode {
     type Error = Error;
 
-    fn try_from(val: u32) -> Result<Self> {
+    fn try_from(val: i32) -> Result<Self> {
         use HubPortMode::*;
         match val {
             ffi::PhidgetHub_PortMode_PORT_MODE_VINT_PORT => Ok(Vint), // 0
@@ -74,7 +74,7 @@ impl Hub {
     /// Get the mode of the specified hub port
     pub fn port_mode(&self, port: i32) -> Result<HubPortMode> {
         let port = port as c_int;
-        let mut mode: c_uint = 0;
+        let mut mode: c_int = 0;
         ReturnCode::result(unsafe { ffi::PhidgetHub_getPortMode(self.chan, port, &mut mode) })?;
         HubPortMode::try_from(mode)
     }
@@ -82,7 +82,7 @@ impl Hub {
     /// Set the mode of the specified hub port
     pub fn set_port_mode(&self, port: i32, mode: HubPortMode) -> Result<()> {
         let port = port as c_int;
-        ReturnCode::result(unsafe { ffi::PhidgetHub_setPortMode(self.chan, port, mode as c_uint) })
+        ReturnCode::result(unsafe { ffi::PhidgetHub_setPortMode(self.chan, port, mode as c_int) })
     }
 
     /// Sets a handler to receive attach callbacks

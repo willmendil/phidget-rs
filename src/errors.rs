@@ -14,7 +14,7 @@ use phidget_sys as ffi;
 use std::{
     ffi::CStr,
     fmt,
-    os::raw::{c_char, c_uint},
+    os::raw::{c_char, c_int},
     ptr,
 };
 
@@ -26,7 +26,7 @@ use std::{
 /// value indicates failure. These are unsigned, so all errors are >0.
 /// This type is a Rust std::error::Error.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(u32)]
+#[repr(i32)]
 #[allow(missing_docs)]
 pub enum ReturnCode {
     Ok = 0,
@@ -81,7 +81,7 @@ pub enum ReturnCode {
 impl ReturnCode {
     /// Convert the raw return code into a Result, where zero is Ok, and
     /// everything else is an error.
-    pub fn result(rc: c_uint) -> Result<()> {
+    pub fn result(rc: c_int) -> Result<()> {
         match rc {
             0 => Ok(()),
             _ => Err(ReturnCode::from(rc)),
@@ -99,7 +99,7 @@ impl fmt::Display for ReturnCode {
         else {
             let mut descr: *const c_char = ptr::null_mut();
             unsafe {
-                if ffi::Phidget_getErrorDescription(*self as c_uint, &mut descr) == 0
+                if ffi::Phidget_getErrorDescription(*self as c_int, &mut descr) == 0
                     && !descr.is_null()
                 {
                     // TODO: Handle conversion error?
@@ -114,11 +114,11 @@ impl fmt::Display for ReturnCode {
     }
 }
 
-impl From<c_uint> for ReturnCode {
+impl From<c_int> for ReturnCode {
     /// Converts an unsigned integer into a `ReturnCode` error.
     /// Note that instead of implementing `try_from`, any unknown integer
     /// value is returned as a `ReturnCode::Unexpected` error.
-    fn from(val: c_uint) -> Self {
+    fn from(val: c_int) -> Self {
         use ReturnCode::*;
         match val {
             0 => Ok,

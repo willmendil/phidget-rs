@@ -8,8 +8,11 @@
 - Seperated digital-io to digital-input and ouput. (Allows better implementation of available functions from binding)
 - Completion of available functions from in digital-input and ouput binding.
 - Removed clap as it is not necessary to have it to use the code and it adds bloat for the examples which should be the minimum code required to use the crate.
-- Moved devices to specific modul to keep the root directory clean.
+- Moved devices to specific module to keep the root directory clean.
 - Renamed build.rs env variable to the directory of phidgets22, as well as adding a search to allow rust to find what it needs.
+- Added instruction on manually generating the binding
+- Reran bindgen with `Phidget22 - Version 1.18 - Built Jan 23 2024 13:44:35` whhich led to a conversion of most `u32` to `i32`.
+- Removed `remove_all_servers` as it breaks linkage for some reason
 
 ## [v0.1.1](https://github.com/fpagliughi/phidget-rs/compare/v0.1.0..v0.1.1)  - 2023-04-20
 

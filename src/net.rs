@@ -18,7 +18,7 @@ use std::{ffi::CString, os::raw::c_int};
 
 /// Phidget server types
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(u32)]
+#[repr(i32)]
 #[allow(missing_docs)]
 pub enum ServerType {
     None = ffi::PhidgetServerType_PHIDGETSERVER_NONE, // 0
@@ -31,10 +31,10 @@ pub enum ServerType {
     Sbc = ffi::PhidgetServerType_PHIDGETSERVER_SBC,   // 7
 }
 
-impl TryFrom<u32> for ServerType {
+impl TryFrom<i32> for ServerType {
     type Error = Error;
 
-    fn try_from(val: u32) -> Result<Self> {
+    fn try_from(val: i32) -> Result<Self> {
         use ServerType::*;
         match val {
             ffi::PhidgetServerType_PHIDGETSERVER_NONE => Ok(None), // 0
@@ -82,7 +82,9 @@ pub fn remove_server(server_name: &str) -> Result<()> {
 
 /// Removes all registered servers.
 pub fn remove_all_servers() -> Result<()> {
-    ReturnCode::result(unsafe { ffi::PhidgetNet_removeAllServers() })
+    unimplemented!();
+    // The code below breaks linkage. Looking at the functions available for [C Networking](https://www.phidgets.com/?view=api), removeAllServers is not listened.
+    // ReturnCode::result(unsafe { ffi::PhidgetNet_removeAllServers() })
 }
 
 /// Enables attempts to connect to a discovered server, if attempts were
@@ -116,13 +118,13 @@ pub fn set_server_passward(server_name: &str, password: &str) -> Result<()> {
 /// the network.
 /// Currently Multicast DNS is used to discover and publish Phidget servers.
 pub fn enable_server_discovery(server_type: ServerType) -> Result<()> {
-    ReturnCode::result(unsafe { ffi::PhidgetNet_enableServerDiscovery(server_type as u32) })
+    ReturnCode::result(unsafe { ffi::PhidgetNet_enableServerDiscovery(server_type as c_int) })
 }
 
 /// Disables the dynamic discovery of servers that publish their identity.
 /// This does not disconnect already established connections.
 pub fn disable_server_discovery(server_type: ServerType) -> Result<()> {
-    ReturnCode::result(unsafe { ffi::PhidgetNet_disableServerDiscovery(server_type as u32) })
+    ReturnCode::result(unsafe { ffi::PhidgetNet_disableServerDiscovery(server_type as c_int) })
 }
 
 /*
