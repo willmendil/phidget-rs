@@ -16,3 +16,6 @@ Low-level, unsafe, Rust wrapper for the phidget22 library.
 [dependencies]
 
 
+
+[build-dependencies]
+bindgen = "0.69.4"
